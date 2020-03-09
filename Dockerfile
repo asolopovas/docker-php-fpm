@@ -61,6 +61,7 @@ RUN docker-php-ext-install \
     pcntl \
     tokenizer \
     xml \
+    su-exec \
     zip
 
 # fix work iconv library with alphine
@@ -74,7 +75,11 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
 # Install PHP_CodeSniffer
-RUN composer global require "squizlabs/php_codesniffer=*"
+RUN composer global require "squizlabs/php_codesniffer=*" --no-cache
+RUN chown -R www-data:www-data /composer
+
+# Enable Opcache
+COPY opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
 
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps
