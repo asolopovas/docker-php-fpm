@@ -86,6 +86,13 @@ RUN set -ex; \
   chown -R www-data:www-data /home/www-data; \
   chown -R www-data:www-data /var/www
 
+
+# Install Oh-My-Zsh
+RUN git clone "https://github.com/ohmyzsh/ohmyzsh.git" "/usr/share/ohmyzsh"
+
+RUN curl -fLo /usr/share/nvim/runtime/autoload/plug.vim --create-dirs \
+     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim;
+
 RUN apk add --no-cache \ 
 		bash \
 		zsh \
@@ -93,3 +100,4 @@ RUN apk add --no-cache \
     mysql-client \
     rsync \
     su-exec
+
