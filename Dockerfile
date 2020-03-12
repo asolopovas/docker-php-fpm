@@ -90,8 +90,6 @@ RUN set -ex; \
 # Install Oh-My-Zsh
 RUN git clone "https://github.com/ohmyzsh/ohmyzsh.git" "/usr/share/ohmyzsh"
 
-RUN curl -fLo /usr/share/nvim/runtime/autoload/plug.vim --create-dirs \
-     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim;
 
 RUN apk add --no-cache \ 
 		bash \
