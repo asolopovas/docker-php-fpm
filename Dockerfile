@@ -87,6 +87,7 @@ RUN set -ex; \
   chown -R www-data:www-data /var/www
 
 RUN apk add --no-cache \ 
+		bash \
 		zsh \
 		neovim \
     mysql-client \
