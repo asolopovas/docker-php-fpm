@@ -12,7 +12,6 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # Install production dependencies
 RUN apk add --no-cache \
-    bash \
     curl \
     freetype-dev \
     g++ \
@@ -24,12 +23,11 @@ RUN apk add --no-cache \
     libpng-dev \
     libzip-dev \
     make \
-    mysql-client \
     oniguruma-dev \
     openssh-client \
     postgresql-libs \
-    rsync \
-    zlib-dev
+		redis \
+    zlib-dev 
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -61,7 +59,6 @@ RUN docker-php-ext-install \
     pcntl \
     tokenizer \
     xml \
-    su-exec \
     zip
 
 # fix work iconv library with alphine
@@ -83,3 +80,15 @@ COPY opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
 
 # Cleanup workspace dependencies
 RUN apk del -f .build-deps
+
+# Assign www-data ownership
+RUN set -ex; \
+  chown -R www-data:www-data /home/www-data; \
+  chown -R www-data:www-data /var/www
+
+RUN apk add --no-cache \ 
+		zsh \
+		neovim \
+    mysql-client \
+    rsync \
+    su-exec
