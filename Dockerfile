@@ -83,7 +83,6 @@ RUN apk del -f .build-deps
 
 # Assign www-data ownership
 RUN set -ex; \
-  chown -R www-data:www-data /home/www-data; \
   chown -R www-data:www-data /var/www
 
 
