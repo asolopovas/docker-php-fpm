@@ -1,4 +1,4 @@
-FROM php:7.4.4-fpm-alpine3.11
+FROM php:7.4-fpm-alpine
 
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \

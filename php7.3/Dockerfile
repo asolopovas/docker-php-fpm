@@ -1,4 +1,4 @@
-FROM php:7.4.4-fpm-alpine3.11
+FROM php:7.3-fpm-alpine
 
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \
@@ -41,7 +41,7 @@ RUN docker-php-ext-enable \
     redis
 
 # Configure php extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr
 
 # Install php extensions
 RUN docker-php-ext-install \
