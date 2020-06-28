@@ -1,4 +1,9 @@
+FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
 FROM php:7.4.4-fpm-alpine3.11
+
+# Copy wkhtmltopdf files from docker-wkhtmltopdf image
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \
@@ -8,7 +13,8 @@ RUN apk add --no-cache --virtual .build-deps \
     libtool \
     libxml2-dev \
     postgresql-dev \
-    sqlite-dev
+    sqlite-dev \
+    msttcorefonts-installer
 
 # Install production dependencies
 RUN apk add --no-cache \
@@ -22,12 +28,29 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     libpng-dev \
     libzip-dev \
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    libssl1.1 \
     make \
     oniguruma-dev \
     openssh-client \
     postgresql-libs \
 		redis \
-    zlib-dev 
+    ca-certificates \
+    fontconfig \
+    freetype \
+    ttf-dejavu \
+    ttf-droid \
+    ttf-freefont \
+    ttf-liberation \
+    ttf-ubuntu-font-family \
+    zlib-dev
+
+# Install microsoft fonts
+RUN update-ms-fonts; \
+    fc-cache -f
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -79,22 +102,17 @@ RUN chown -R www-data:www-data /composer
 COPY opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
 
 # Cleanup workspace dependencies
-RUN apk del -f .build-deps
+RUN apk del -f .build-deps; \
+    rm -rf /tmp/*
 
 # Assign www-data ownership
 RUN set -ex; \
   chown -R www-data:www-data /var/www
 
-
-# Install Oh-My-Zsh
-RUN git clone "https://github.com/ohmyzsh/ohmyzsh.git" "/usr/share/ohmyzsh"
-
-
-RUN apk add --no-cache \ 
+RUN apk add --no-cache \
 		bash \
 		zsh \
 		neovim \
     mysql-client \
     rsync \
     su-exec
-
