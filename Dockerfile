@@ -18,6 +18,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 # Install production dependencies
 RUN apk add --no-cache \
+    shadow \
     curl \
     freetype-dev \
     g++ \
@@ -105,14 +106,8 @@ COPY opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
 RUN apk del -f .build-deps; \
     rm -rf /tmp/*
 
-# Assign www-data ownership
-RUN set -ex; \
-  chown -R www-data:www-data /var/www
+# www-data group/userid 1000
+RUN  set -ex; usermod -u 1000 www-data; groupmod -g 1000 www-data; \
+     chown -R www-data:www-data /var/www
 
-RUN apk add --no-cache \
-		bash \
-		zsh \
-		neovim \
-    mysql-client \
-    rsync \
-    su-exec
+RUN apk add --no-cache bash zsh neovim mysql-client rsync su-exec
