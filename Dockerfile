@@ -108,6 +108,6 @@ RUN apk del -f .build-deps; \
 
 # www-data group/userid 1000
 RUN  set -ex; usermod -u 1000 www-data; groupmod -g 1000 www-data; \
-     chown -R www-data:www-data /var/www
+     chown -R 1000:1000 /var/www /home/www-data;
 
-RUN apk add --no-cache bash zsh neovim mysql-client rsync su-exec
+RUN apk add --no-cache bash zsh neovim mysql-client rsync su-exec sudo libstdc++ zsh-vcs
