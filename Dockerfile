@@ -1,9 +1,10 @@
 FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
-FROM php:7.4.4-fpm-alpine3.11
+FROM php:7.4.8-fpm-alpine3.12
 
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
+
 
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \
@@ -86,10 +87,6 @@ RUN docker-php-ext-install \
     xml \
     zip
 
-# fix work iconv library with alphine
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-
 # Install composer
 ENV COMPOSER_HOME /composer
 ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
@@ -110,5 +107,9 @@ RUN apk del -f .build-deps; \
 # www-data group/userid 1000
 RUN  set -ex; usermod -u 1000 www-data; groupmod -g 1000 www-data; \
      chown -R 1000:1000 /var/www /home/www-data;
+
+# Fix iconv alpinerror still pops up
+RUN apk add gnu-libiconv --no-cache --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 RUN apk add --no-cache bash zsh neovim mysql-client rsync su-exec sudo libstdc++ zsh-vcs
