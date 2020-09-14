@@ -5,7 +5,6 @@ FROM php:7.4.8-fpm-alpine3.12
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
 COPY --from=wkhtmltopdf /bin/libwkhtmltox* /bin/
 
-
 # Install workspace dependencies
 RUN apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
@@ -29,6 +28,7 @@ RUN apk add --no-cache \
     libc-dev \
     libjpeg-turbo-dev \
     libpng-dev \
+    libwebp-dev \
     libzip-dev \
     libstdc++ \
     libx11 \
@@ -39,7 +39,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     openssh-client \
     postgresql-libs \
-		redis \
+    redis \
     ca-certificates \
     fontconfig \
     freetype \
@@ -66,7 +66,7 @@ RUN docker-php-ext-enable \
     redis
 
 # Configure php extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 
 # Install php extensions
 RUN docker-php-ext-install \
