@@ -1,5 +1,5 @@
 FROM surnet/alpine-wkhtmltopdf:3.10-0.12.6-small as wkhtmltopdf
-FROM php:7.4.8-fpm-alpine3.12
+FROM php:7.4.14-fpm-alpine3.12
 
 # Copy wkhtmltopdf files from docker-wkhtmltopdf image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /bin/wkhtmltopdf
